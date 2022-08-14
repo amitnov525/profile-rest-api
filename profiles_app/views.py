@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from profiles_app import serializers
-
 from rest_framework.views import  APIView
 from rest_framework.response import Response
 from rest_framework import status
-from profiles_app.serializers import Helloserializer
+from profiles_app.serializers import Helloserializer,UserProfileSerializer
 from rest_framework import viewsets
+from profiles_app.models import UserProfile
+from profiles_app.permissions import UpdateOwnProfile
+from rest_framework.authentication import TokenAuthentication
 
 
 class HelloAPIView(APIView):
@@ -74,6 +75,12 @@ class HelooViewset(viewsets.ViewSet):
         return Response({'method':'destroy'})
     
 
+class UserProfileViewset(viewsets.ModelViewSet):
+    """Handles creating and updating a user profile"""
+    serializer_class=UserProfileSerializer
+    queryset=UserProfile.objects.all()
+    authentication_classes=(TokenAuthentication,)
+    permission_classes=(UpdateOwnProfile,)
 
 
 
